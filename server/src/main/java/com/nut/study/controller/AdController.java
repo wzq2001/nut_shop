@@ -25,7 +25,7 @@ import java.util.UUID;
 @RequestMapping("/ad")
 public class AdController {
 
-    private final static Logger logger = LoggerFactory.getLogger(AdController.class);
+    private final static Logger  logger = LoggerFactory.getLogger(AdController.class);
 
     @Autowired
     AdService service;
