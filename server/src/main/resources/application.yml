@@ -1,0 +1,55 @@
+server.port: 9100
+server.servlet.context-path: /api
+
+BASE_LOCATION: S:\study\java\java_shop
+DB_NAME: java_shop
+
+#BASE_LOCATION: C:\Users\Administrator\Desktop\java-shop
+#DB_NAME: java_shop
+
+
+File:
+  uploadPath: ${BASE_LOCATION}\server\upload
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+spring:
+  # 数据源配置
+  datasource:
+    druid:
+      filter:
+        stat:
+          enabled: false
+        wall:
+          enabled: false
+        slf4j:
+          enabled: false
+        log4j2:
+          enabled: false
+        log4j:
+          enabled: false
+        commons-log:
+          enabled: false
+      stat-view-servlet:
+        enabled: false
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/nut_shop?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      #      数据库密码
+      username: root
+      password: password
+      initial-size: 2
+      max-active: 5
+      min-idle: 2
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      type: com.alibaba.druid.pool.DruidDataSource
