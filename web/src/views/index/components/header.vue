@@ -8,7 +8,11 @@
       <input placeholder="输入关键词" ref="keywordRef" @keyup.enter="search" />
     </div>
     <div class="right-view">
+      
       <template v-if="userStore.user_token">
+        <div class="center-container">
+          <a href="/#/admin" class="foot-link">后台管理</a>
+        </div>
         <a-dropdown>
           <a class="ant-dropdown-link" @click="e => e.preventDefault()">
             <img :src="AvatarIcon" class="self-img" >
@@ -338,5 +342,17 @@ const onClose = () => {
   }
 
 }
+
+.center-container {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    justify-content: center; /* 水平居中对齐 */
+  }
+
+  .foot-link {
+    /* 可选：为链接添加其他样式，比如颜色、下划线等 */
+    color: #333;
+    text-decoration: none;
+  }
 
 </style>

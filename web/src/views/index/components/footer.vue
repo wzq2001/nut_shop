@@ -1,6 +1,6 @@
 <template>
   <div class="footer-view">
-    <div class="foot-link-box flex-view">
+    <!-- <div class="foot-link-box flex-view">
       <a href="https://github.com/geeeeeeeek/java_shop" class="foot-link" target="_blank">系统文档</a>
       <div class="link-split"></div>
       <a href="/#/admin" class="foot-link" target="_blank">后台管理</a>
@@ -13,7 +13,7 @@
       </span>
       <span>&nbsp;&nbsp;京公网安备123456&nbsp;&nbsp;新出发京零字第东123456号&nbsp;&nbsp;统一社会信用代码 123456789</span>
     </div>
-    <div class="address">2022-2023 © 北京代码演示 · All Rights Reserved</div>
+    <div class="address">2022-2023 © 北京代码演示 · All Rights Reserved</div> -->
   </div>
 </template>
 
