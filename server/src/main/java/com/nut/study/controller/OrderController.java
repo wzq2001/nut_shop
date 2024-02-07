@@ -41,8 +41,8 @@ public class OrderController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @Transactional
     public APIResponse create(Order order) throws IOException {
-        service.createOrder(order);
-        return new APIResponse(ResponeCode.SUCCESS, "创建成功");
+        int id = service.createOrder(order);
+        return new APIResponse(ResponeCode.SUCCESS, id);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -54,6 +54,17 @@ public class OrderController {
             service.deleteOrder(id);
         }
         return new APIResponse(ResponeCode.SUCCESS, "删除成功");
+    }
+
+    //更改订单状态
+    @RequestMapping(value = "/updateOrder", method = RequestMethod.POST)
+    @Transactional
+    public APIResponse updateOrder(Long id) throws IOException {
+        Order order = new Order();
+        order.setId(id);
+        order.setStatus("2"); // 2=已发货
+        service.updateOrder(order);
+        return new APIResponse(ResponeCode.SUCCESS, "更新成功");
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)

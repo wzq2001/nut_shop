@@ -20,12 +20,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void createOrder(Order order) {
+    public int createOrder(Order order) {
         long ct = System.currentTimeMillis();
         order.setOrderTime(String.valueOf(ct));
         order.setOrderNumber(String.valueOf(ct));
         order.setStatus("1");
         mapper.insert(order);
+        return order.getId().intValue();
     }
 
     @Override
@@ -41,5 +42,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Order> getUserOrderList(String userId, String status) {
         return mapper.getUserOrderList(userId, status);
+//        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("user_id", userId);
+//        if (StringUtils.isNotBlank(status)) {
+//            queryWrapper.eq("status", status);
+//        }
+//        queryWrapper.orderBy(true, false, "order_time");
+//        return mapper.selectList(queryWrapper);
     }
 }

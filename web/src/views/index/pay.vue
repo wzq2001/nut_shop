@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header/>
+    <Header />
     <div class="pay-content">
       <div class="title">订单提交成功</div>
       <div class="text time-margin">
@@ -25,7 +25,10 @@
           </div>
         </div>
         <div class="tips">请选择任意一种支付方式</div>
-        <button class="pay-btn pay-btn-active" @click="handlePay()">确认支付</button>
+        <div class="buttons-container">
+          <button class="pay-btn pay-btn-active" @click="handleResult({ id })">返回</button>
+          <button class="pay-btn pay-btn-active" @click="handlePay({ id })">确认支付</button>
+        </div>
       </div>
       <div class="pay-qr-view" style="display: none;">
         <div class="loading-tip" style="">正在生成安全支付二维码</div>
@@ -39,47 +42,61 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
 import Header from '/@/views/index/components/header.vue'
-import {message} from "ant-design-vue";
+import { message } from "ant-design-vue";
 import WxPayIcon from '/@/assets/images/wx-pay-icon.svg';
 import AliPayIcon from '/@/assets/images/ali-pay-icon.svg';
-
+import { createApi, listApi, updateApi, updateOrderApi, cancelApi } from '/@/api/order';
 const route = useRoute();
-
+const router = useRouter();
 let ddlTime = ref()
 let amount = ref()
+let id = ref()
 
 onMounted(() => {
   amount.value = route.query.amount
+  id.value = route.query.id
   ddlTime.value = formatDate(new Date().getTime(), 'YY-MM-DD hh:mm:ss')
 })
 
-const handlePay = () => {
-  message.warn('暂无支付功能')
+const handleResult = () => {
+  router.push({ path: '/index/usercenter/orderView' })
+}
+
+const handlePay = (record) => {
+  console.log("id", record);
+  updateOrderApi(record)
+    .then((res) => {
+      message.success('支付成功')
+      router.push({ path: '/index/usercenter/orderView' })
+    })
+    .catch((err) => {
+      message.error(err.msg || '操作失败');
+    });
+  //页面跳转
 }
 const formatDate = (time, format = 'YY-MM-DD hh:mm:ss') => {
   const date = new Date(time)
 
   const year = date.getFullYear(),
-      month = date.getMonth() + 1,
-      day = date.getDate() + 1,
-      hour = date.getHours(),
-      min = date.getMinutes(),
-      sec = date.getSeconds()
+    month = date.getMonth() + 1,
+    day = date.getDate() + 1,
+    hour = date.getHours(),
+    min = date.getMinutes(),
+    sec = date.getSeconds()
   const preArr = Array.apply(null, Array(10)).map(function (elem, index) {
     return '0' + index
   })
 
   const newTime = format.replace(/YY/g, year)
-      .replace(/MM/g, preArr[month] || month)
-      .replace(/DD/g, preArr[day] || day)
-      .replace(/hh/g, preArr[hour] || hour)
-      .replace(/mm/g, preArr[min] || min)
-      .replace(/ss/g, preArr[sec] || sec)
+    .replace(/MM/g, preArr[month] || month)
+    .replace(/DD/g, preArr[day] || day)
+    .replace(/hh/g, preArr[hour] || hour)
+    .replace(/mm/g, preArr[min] || min)
+    .replace(/ss/g, preArr[sec] || sec)
 
   return newTime
 }
@@ -195,6 +212,14 @@ const formatDate = (time, format = 'YY-MM-DD hh:mm:ss') => {
       margin: 16px 0 24px;
     }
 
+    .buttons-container {
+      display: flex;
+      justify-content: center;
+      /* 水平居中 */
+      gap: 10px;
+      /* 按钮之间的间隔 */
+    }
+
     .pay-btn {
       cursor: pointer;
       background: #c3c9d5;
@@ -207,8 +232,10 @@ const formatDate = (time, format = 'YY-MM-DD hh:mm:ss') => {
       font-size: 14px;
       color: #fff;
       text-align: center;
-      display: block;
-      margin: 0 auto;
+      display: inline-block;
+      /* 改为inline-block以适应flex布局 */
+      /* margin: 0 auto; */
+      /* 移除自动外边距，因为我们使用flex来居中 */
     }
 
     .pay-btn-active {
@@ -216,5 +243,4 @@ const formatDate = (time, format = 'YY-MM-DD hh:mm:ss') => {
     }
   }
 }
-
 </style>

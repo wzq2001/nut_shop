@@ -299,7 +299,9 @@ const handleJiesuan = () => {
   console.log(formData)
   createApi(formData).then(res => {
     message.success('请支付订单')
-    router.push({'name': 'pay', query: {'amount': pageData.amount}})
+    console.log("res", res);
+    
+    router.push({'name': 'pay', query: {'amount': pageData.amount, 'id': res.data}})
   }).catch(err => {
     message.error(err.msg || '失败')
   })

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,7 +47,6 @@ public class UserController {
     // 后台用户登录
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public APIResponse login(User user){
-        user.setPassword(DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes()));
         User responseUser =  userService.getAdminUser(user);
         if(responseUser != null) {
             return new APIResponse(ResponeCode.SUCCESS, "查询成功", responseUser);
@@ -60,7 +58,6 @@ public class UserController {
     // 普通用户登录
     @RequestMapping(value = "/userLogin", method = RequestMethod.POST)
     public APIResponse userLogin(User user){
-        user.setPassword(DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes()));
         User responseUser =  userService.getNormalUser(user);
         if(responseUser != null) {
             return new APIResponse(ResponeCode.SUCCESS, "查询成功", responseUser);
@@ -85,12 +82,8 @@ public class UserController {
             if(!user.getPassword().equals(user.getRePassword())) {
                 return new APIResponse(ResponeCode.FAIL, "密码不一致");
             }
-            String md5Str = DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes());
             // 设置密码
-            user.setPassword(md5Str);
-            md5Str = DigestUtils.md5DigestAsHex((user.getUsername() + salt).getBytes());
-            // 设置token
-            user.setToken(md5Str);
+            user.setToken(user.getPassword());
 
             String avatar = saveAvatar(user);
             if(!StringUtils.isEmpty(avatar)) {
@@ -117,12 +110,9 @@ public class UserController {
             if(userService.getUserByUserName(user.getUsername()) != null) {
                 return new APIResponse(ResponeCode.FAIL, "用户名重复");
             }
-            String md5Str = DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes());
             // 设置密码
-            user.setPassword(md5Str);
-            md5Str = DigestUtils.md5DigestAsHex((user.getUsername() + salt).getBytes());
             // 设置token
-            user.setToken(md5Str);
+            user.setToken(user.getPassword());
             user.setCreateTime(String.valueOf(System.currentTimeMillis()));
 
             String avatar = saveAvatar(user);
@@ -186,9 +176,8 @@ public class UserController {
     public APIResponse updatePwd(String userId, String password, String newPassword) throws IOException {
         User user =  userService.getUserDetail(userId);
         if(user.getRole().equals(String.valueOf(User.NormalUser))) {
-            String md5Pwd = DigestUtils.md5DigestAsHex((password + salt).getBytes());
-            if(user.getPassword().equals(md5Pwd)){
-                user.setPassword(DigestUtils.md5DigestAsHex((newPassword + salt).getBytes()));
+            if(user.getPassword().equals(password)){
+                user.setPassword(newPassword);
                 userService.updateUser(user);
             }else {
                 return new APIResponse(ResponeCode.FAIL, "原密码错误");

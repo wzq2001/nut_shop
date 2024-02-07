@@ -26,6 +26,7 @@
               cancel-text="否"
               @confirm="handleCancel(item)"
             >
+              <a-button type="primary" size="small" @click="handlePay(item)" style="margin-right: 24px;">支付</a-button>
               <a-button type="primary" size="small" style="margin-right: 24px;">取消</a-button>
             </a-popconfirm>
             <span class="text">订单状态</span>
@@ -35,7 +36,7 @@
         <div class="content flex-view">
           <div class="left-list">
             <div class="list-item flex-view">
-              <img :src="item.cover" class="thing-img">
+              <img :src="item.cover" class="thing-img"> 
               <div class="detail flex-between flex-view">
                 <div class="flex-between flex-top flex-view">
                   <h2 class="name">{{item.title}}</h2>
@@ -135,6 +136,11 @@ const handleDetail =(thingId) =>{
   let text = router.resolve({name: 'detail', query: {id: thingId}})
   window.open(text.href, '_blank')
 }
+
+const handlePay =(item)=> {
+  router.push({path: '/index/pay', query: {id: item.id, amount: item.price * item.count}})
+}
+
 const handleCancel =(item)=> {
   cancelUserOrderApi({
     id: item.id
