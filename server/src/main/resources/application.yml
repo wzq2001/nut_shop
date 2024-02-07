@@ -2,7 +2,7 @@
 server.port: 9100
 server.servlet.context-path: /api
 
-BASE_LOCATION: S:\nut_shop
+BASE_LOCATION: D:\project\nut_shop
 DB_NAME: nut_shop
 
 #BASE_LOCATION: C:\Users\Administrator\Desktop\java-shop
@@ -11,7 +11,7 @@ DB_NAME: nut_shop
 spring:
   datasource:
     username: root
-    password: password
+    password: 123456
     url: jdbc:mysql://localhost:3306/${DB_NAME}?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
