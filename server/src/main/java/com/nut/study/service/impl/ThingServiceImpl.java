@@ -39,7 +39,7 @@ public class ThingServiceImpl extends ServiceImpl<ThingMapper, Thing> implements
             } else if (sort.equals("hot") || sort.equals("recommend")) {
                 queryWrapper.orderBy(true, false, "pv");
             }
-        }else {
+        } else {
             queryWrapper.orderBy(true, false, "create_time");
         }
 
@@ -81,7 +81,7 @@ public class ThingServiceImpl extends ServiceImpl<ThingMapper, Thing> implements
     @Override
     public void createThing(Thing thing) {
         System.out.println(thing);
-        thing.setCreateTime(String.valueOf(System.currentTimeMillis()));
+        thing.setCreateTime(String.valueOf(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 30 * 5));
 
         if (thing.getPv() == null) {
             thing.setPv("0");
