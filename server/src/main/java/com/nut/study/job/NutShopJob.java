@@ -3,6 +3,7 @@ package com.nut.study.job;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nut.study.entity.Notice;
 import com.nut.study.entity.Thing;
+import com.nut.study.mapper.NoticeMapper;
 import com.nut.study.mapper.ThingMapper;
 import com.nut.study.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class NutShopJob {
     @Autowired
     NoticeService noticeService;
 
+    @Autowired
+    NoticeMapper noticeMapper;
     @Autowired
     ThingMapper thingMapper;
 
@@ -34,11 +37,29 @@ public class NutShopJob {
         List<Thing> things = thingMapper.selectList(wrapper);
         for (Thing thing : things) {
             //发送通知
+            QueryWrapper<Notice> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("title", "临期商品打折:" + thing.getTitle());
+            Long l = noticeMapper.selectCount(queryWrapper);
+            if (l > 0) {
+                continue;
+            }
             Notice notice = new Notice();
-            notice.setContent("商品:" + thing.getTitle() + "即将过期，请尽快处理");
-            notice.setTitle("临期商品打折");
+            String price = thing.getPrice();
+            // 转换为整数
+            long priceAsLong = (long) (Double.parseDouble(price) * 0.8);
+            // 将 long 转换回字符串
+            String newPrice = String.valueOf(priceAsLong);
+            notice.setContent("商品:" + thing.getTitle() + "临期8折!价格由" + price + "元，下调为" + newPrice + "元!");
+            notice.setTitle("临期商品打折:" + thing.getTitle());
             noticeService.createNotice(notice);
+            thing.setPrice(newPrice);
+            thingMapper.updateById(thing);
         }
+
+        //查询过期商品下架
+        QueryWrapper<Thing> wrapper1 = new QueryWrapper<>();
+        wrapper1.le("create_time", String.valueOf(System.currentTimeMillis()));
+        thingMapper.delete(wrapper1);
     }
 
 }

@@ -11,10 +11,9 @@ import com.nut.study.service.ThingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +73,12 @@ public class ThingServiceImpl extends ServiceImpl<ThingMapper, Thing> implements
             List<ThingTag> thingTags = thingTagMapper.selectList(thingTagQueryWrapper);
             List<Long> tags = thingTags.stream().map(ThingTag::getTagId).collect(Collectors.toList());
             thing.setTags(tags);
+            Date date = new Date(Long.valueOf(thing.getCreateTime()));
+            // 创建SimpleDateFormat对象，定义日期格式
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            // 格式化日期
+            String formattedDate = sdf.format(date);
+            thing.setCreateTime(formattedDate);
         }
         return things;
     }
@@ -81,8 +86,18 @@ public class ThingServiceImpl extends ServiceImpl<ThingMapper, Thing> implements
     @Override
     public void createThing(Thing thing) {
         System.out.println(thing);
-        thing.setCreateTime(String.valueOf(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 30 * 5));
-
+        //设置下架时间
+        String createTime = thing.getCreateTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            // 将日期字符串解析为Date对象
+            Date date = sdf.parse(createTime);
+            // 获取时间戳（毫秒）
+            long timestamp = date.getTime();
+            thing.setCreateTime(String.valueOf(timestamp));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (thing.getPv() == null) {
             thing.setPv("0");
         }
@@ -104,7 +119,17 @@ public class ThingServiceImpl extends ServiceImpl<ThingMapper, Thing> implements
 
     @Override
     public void updateThing(Thing thing) {
-
+        String createTime = thing.getCreateTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            // 将日期字符串解析为Date对象
+            Date date = sdf.parse(createTime);
+            // 获取时间戳（毫秒）
+            long timestamp = date.getTime();
+            thing.setCreateTime(String.valueOf(timestamp));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         // 更新tag
         setThingTags(thing);
 

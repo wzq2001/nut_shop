@@ -126,6 +126,12 @@
                   <a-input-number placeholder="请输入" :min="0" v-model:value="modal.form.repertory" style="width: 100%;"></a-input-number>
                 </a-form-item>
               </a-col>
+              <a-col span="12">
+                <a-form-item label="下架时间" name="createTime">
+                  <!-- 使用 a-input 组件 -->
+                  <a-input placeholder="请输入" v-model:value="modal.form.createTime" style="width: 100%;"></a-input>
+                </a-form-item>
+              </a-col>
             </a-row>
           </a-form>
         </div>
@@ -226,14 +232,16 @@ const modal = reactive({
     status: undefined,
     cover: undefined,
     coverUrl: undefined,
-    imageFile: undefined
+    imageFile: undefined,
+    createTime: undefined
   },
   rules: {
     title: [{ required: true, message: '请输入名称', trigger: 'change' }],
     classificationId: [{ required: true, message: '请选择分类', trigger: 'change' }],
     repertory: [{ required: true, message: '请输入库存', trigger: 'change' }],
     price: [{ required: true, message: '请输入定价', trigger: 'change' }],
-    status: [{ required: true, message: '请选择状态', trigger: 'change' }]
+    status: [{ required: true, message: '请选择状态', trigger: 'change' }],
+    createTime: [{ required: true, message: '请输入时间', trigger: 'change' }],
   },
 });
 
@@ -383,6 +391,9 @@ const handleOk = () => {
         }
         if (modal.form.status) {
           formData.append('status', modal.form.status)
+        }
+        if (modal.form.createTime) {
+          formData.append('createTime', modal.form.createTime)
         }
         if (modal.editFlag) {
           updateApi(formData)
