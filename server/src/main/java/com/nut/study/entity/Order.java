@@ -13,6 +13,8 @@ import java.io.Serializable;
 public class Order implements Serializable {
     @TableId(value = "id",type = IdType.AUTO)
     public Long id;
+
+    //1待支付2.待发货3.待收货4.已收货
     @TableField
     public String status;
     @TableField

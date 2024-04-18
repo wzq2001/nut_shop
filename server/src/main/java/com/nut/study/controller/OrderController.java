@@ -25,16 +25,16 @@ public class OrderController {
     OrderService service;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public APIResponse list(){
-        List<Order> list =  service.getOrderList();
+    public APIResponse list() {
+        List<Order> list = service.getOrderList();
 
         return new APIResponse(ResponeCode.SUCCESS, "查询成功", list);
     }
 
     // 用户订单
     @RequestMapping(value = "/userOrderList", method = RequestMethod.GET)
-    public APIResponse userOrderList(String userId, String status){
-        List<Order> list =  service.getUserOrderList(userId, status);
+    public APIResponse userOrderList(String userId, String status) {
+        List<Order> list = service.getUserOrderList(userId, status);
         return new APIResponse(ResponeCode.SUCCESS, "查询成功", list);
     }
 
@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public APIResponse delete(String ids){
+    public APIResponse delete(String ids) {
         System.out.println("ids===" + ids);
         // 批量删除
         String[] arr = ids.split(",");
@@ -59,10 +59,10 @@ public class OrderController {
     //更改订单状态
     @RequestMapping(value = "/updateOrder", method = RequestMethod.POST)
     @Transactional
-    public APIResponse updateOrder(Long id) throws IOException {
+    public APIResponse updateOrder(Order o) throws IOException {
         Order order = new Order();
-        order.setId(id);
-        order.setStatus("2"); // 2=已发货
+        order.setId(o.getId());
+        order.setStatus(o.getStatus()); // 2=已发货
         service.updateOrder(order);
         return new APIResponse(ResponeCode.SUCCESS, "更新成功");
     }
