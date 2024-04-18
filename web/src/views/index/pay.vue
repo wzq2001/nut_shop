@@ -27,7 +27,7 @@
         <div class="tips">请选择任意一种支付方式</div>
         <div class="buttons-container">
           <button class="pay-btn pay-btn-active" @click="handleResult({ id })">返回</button>
-          <button class="pay-btn pay-btn-active" @click="handlePay({ id })">确认支付</button>
+          <button class="pay-btn pay-btn-active" @click="handlePay({ id,status })">确认支付</button>
         </div>
       </div>
       <div class="pay-qr-view" style="display: none;">
@@ -55,6 +55,7 @@ const router = useRouter();
 let ddlTime = ref()
 let amount = ref()
 let id = ref()
+let status = ref("2")
 
 onMounted(() => {
   amount.value = route.query.amount

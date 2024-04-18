@@ -6,7 +6,11 @@
       </a-tab-pane>
       <a-tab-pane key="2" tab="待付款">
       </a-tab-pane>
-      <a-tab-pane key="3" tab="已支付">
+      <a-tab-pane key="3" tab="待发货">
+      </a-tab-pane>
+      <a-tab-pane key="4" tab="待收货">
+      </a-tab-pane>
+      <a-tab-pane key="5" tab="已收货">
       </a-tab-pane>
     </a-tabs>
     <div class="list-content">
@@ -30,7 +34,7 @@
               <a-button type="primary" size="small" style="margin-right: 24px;">取消</a-button>
             </a-popconfirm>
             <span class="text">订单状态</span>
-            <span class="state">{{item.status==='1'? '待支付': item.status === '2'? '已支付':'已取消'}}</span>
+            <span class="state">{{item.status==='1'? '待支付': item.status === '2'? '待发货': item.status === '3'? '待收货': item.status === '4'? '已收货':'已取消'}}</span>
           </div>
         </div>
         <div class="content flex-view">
@@ -67,6 +71,7 @@
           <div class="left">
             <span class="text">共{{item.count}}件商品</span>
             <span class="open" @click="handleDetail(item.thingId)">商品详情</span>
+            <span class="open" v-if="item.status === '3'" @click="handleReceipt(item)">确认收货</span>
           </div>
           <div class="right flex-view">
             <span class="text">总计</span>
@@ -86,7 +91,7 @@
 import {message} from "ant-design-vue";
 import {getFormatTime} from '/@/utils/'
 import {userOrderListApi} from '/@/api/order'
-import {cancelUserOrderApi} from '/@/api/order'
+import {cancelUserOrderApi,updateOrderApi} from '/@/api/order'
 import {BASE_URL} from "/@/store/constants";
 import {useUserStore} from "/@/store";
 
@@ -113,6 +118,12 @@ const onTabChange =(key)=> {
   if (key === '3') {
     orderStatus.value = '2'
   }
+  if (key === '4') {
+    orderStatus.value = '3'
+  }
+  if (key === '5') {
+    orderStatus.value = '4'
+  }
   getOrderList()
 }
 const getOrderList= ()=> {
@@ -136,6 +147,18 @@ const handleDetail =(thingId) =>{
   let text = router.resolve({name: 'detail', query: {id: thingId}})
   window.open(text.href, '_blank')
 }
+
+const handleReceipt =(item) =>{
+  updateOrderApi({id: item.id,status: "4"})
+        .then((res) => {
+          message.success('收货成功')
+          getOrderList()
+        })
+        .catch((err) => {
+          message.error(err.msg || '操作失败');
+        });
+}
+
 
 const handlePay =(item)=> {
   router.push({path: '/index/pay', query: {id: item.id, amount: item.price * item.count}})
